@@ -5,29 +5,42 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import com.example.translator.api.TranslateApiService;
 import com.example.translator.model.TranslateItem;
 import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
+    @BindView(R.id.input_text) EditText translateInput;
+
     @BindView(R.id.translated_text) TextView translatedText;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         LoadTranslation trans = new LoadTranslation();
         trans.execute();
         setContentView(R.layout.activity_main);
         ButterKnife.bind(MainActivity.this);
     }
+
+    @OnClick(R.id.button_translate)
+     protected void translateText() {
+                String textToTranslate = translateInput.getText().toString();
+                System.out.println("test inputted: " + textToTranslate);
+            }
 
     private class LoadTranslation extends AsyncTask<Void, Void, TranslateItem > {
         @Override
