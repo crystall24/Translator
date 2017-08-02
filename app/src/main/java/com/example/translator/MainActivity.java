@@ -30,21 +30,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
-        LoadTranslation trans = new LoadTranslation();
-        trans.execute();
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(MainActivity.this);
     }
 
     @OnClick(R.id.button_translate)
      protected void translateText() {
-                String textToTranslate = translateInput.getText().toString();
-                System.out.println("test inputted: " + textToTranslate);
-            }
+        String textToTranslate = translateInput.getText().toString();
+        System.out.println("test inputted: " + textToTranslate);
+        LoadTranslation trans = new LoadTranslation();
+        trans.execute(textToTranslate);
+    }
 
-    private class LoadTranslation extends AsyncTask<Void, Void, TranslateItem > {
+    private class LoadTranslation extends AsyncTask<String, Void, TranslateItem > {
         @Override
-        protected TranslateItem doInBackground(Void... params) {
+        protected TranslateItem doInBackground(String... text) {
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("https://translate.yandex.net/")
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
             TranslateApiService service = retrofit.create(TranslateApiService.class);
 
-            Call<TranslateItem> translation = service.getTranslation();
+            Call<TranslateItem> translation = service.getTranslation(text[0]);
             TranslateItem item = new TranslateItem();
             try {
                 item = translation.execute().body();
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(TranslateItem tr) {
-            translatedText.setText("translated: " + tr.getText()[0]);
+            translatedText.setText(tr.getText()[0]);
             Log.d("MAINACTIVITY",tr.getText()[0]);
         }
     }
