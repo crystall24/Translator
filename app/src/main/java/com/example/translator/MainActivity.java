@@ -1,4 +1,5 @@
 package com.example.translator;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class LoadTranslation extends AsyncTask<String, Void, TranslateItem > {
+        ProgressDialog pDialog;
+
         @Override
         protected TranslateItem doInBackground(String... text) {
 
@@ -63,17 +66,18 @@ public class MainActivity extends AppCompatActivity {
             }
             return item;
         }
-        /**@Override protected void onPreExecute() {
-        super.onPreExecute();
-        pDialog = new ProgressDialog(MainActivity.this);
-        pDialog.setMessage("");
-        pDialog.show();
 
-        }**/
+        @Override protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("Loading");
+            pDialog.show();
+        }
 
         @Override
         protected void onPostExecute(TranslateItem tr) {
             translatedText.setText(tr.getText()[0]);
+            pDialog.hide();
             Log.d("MAINACTIVITY",tr.getText()[0]);
         }
     }
