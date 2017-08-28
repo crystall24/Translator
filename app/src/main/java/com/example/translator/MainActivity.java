@@ -8,14 +8,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.translator.R;
-import com.example.translator.TranslateSettings;
 import com.example.translator.api.TranslateApiService;
 import com.example.translator.mapper.SupportedLanguagesResponseMapper;
 import com.example.translator.model.Language;
 import com.example.translator.model.SupportedLanguagesResponse;
 import com.example.translator.model.TranslateItem;
-
 
 import java.io.IOException;
 import java.util.List;
@@ -26,6 +23,7 @@ import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class MainActivity extends AppCompatActivity {
     private final static String EMPTY_STRING = "";
@@ -52,9 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
         LoadLanguages loadLanguages = new LoadLanguages();
         loadLanguages.execute("ru");
-
-        Log.d("MAINACTIVITY", "execute start");
-
     }
 
     @OnClick(R.id.button_translate)
@@ -71,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
         TranslateSettings translateSettings =
                 new TranslateSettings(textToTranslate, fromLanguage, toLanguage);
 
-
         LoadTranslation transLationLoader = new LoadTranslation(); //
         transLationLoader.execute(translateSettings);
     }
@@ -84,9 +78,6 @@ public class MainActivity extends AppCompatActivity {
         fromLanguageSpinner.setSelection(idToLanguage, true);
         toLanguageSpinner.setSelection(idFromLanguage, true);
     }
-
-
-
 
     private class LoadTranslation extends AsyncTask<TranslateSettings, Void, TranslateItem> {
         ProgressDialog pDialog;
@@ -105,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
             return item;
         }
 
-
         @Override protected void onPreExecute() {
             super.onPreExecute();
             pDialog = new ProgressDialog(MainActivity.this);
@@ -118,11 +108,7 @@ public class MainActivity extends AppCompatActivity {
             pDialog.hide();
 
             if(tr != null) {
-                Log.d("MAINACTIVITY", "tr object: " + tr);
-                Log.d("MAINACTIVITY", "rt response code: " + tr.getCode());
-                Log.d("MAINACTIVITY", tr.getText()[0]);
-                translateView.setText("tr: " + tr.getText()[0]);
-                // TODO: callTranslate
+                translateView.setText(tr.getText()[0]);
             } else {
                 translateView.setText("Нечего переводить");
             }
@@ -132,14 +118,11 @@ public class MainActivity extends AppCompatActivity {
     private class LoadLanguages extends AsyncTask<String, Void, List<Language>> {
         @Override
         protected  List<Language> doInBackground(String... params) {
-            Log.d("MAINA--start load langs", params[0]);
-
-
             Call<SupportedLanguagesResponse> langs = service.getLanguages(params[0]);
             SupportedLanguagesResponseMapper mapper = new SupportedLanguagesResponseMapper();
             List<Language> langsList = null;
 
-            SupportedLanguagesResponse langsResponse = new SupportedLanguagesResponse();
+            SupportedLanguagesResponse langsResponse;
             try {
                 langsResponse = langs.execute().body();
                 langsList = mapper.apply(langsResponse);
@@ -151,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(List<Language> langList){
-            Log.d("MAIN langs loaded", langList.toString());
-
             LanguageAdapter languageAdapter = new LanguageAdapter(MainActivity.this, R.layout.simple_spinner_item, langList);
             languageAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 
@@ -178,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
         Language selected = ((Language) spinner.getSelectedItem());
 
         if (selected != null) {
-            Log.d("MAIN", "lang code: " + selected.getLanguageCode());
             return selected.getLanguageCode();
         }
 
