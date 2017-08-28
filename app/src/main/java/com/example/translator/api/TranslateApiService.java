@@ -8,7 +8,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface TranslateApiService {
-    String KEY = "trnsl.1.1.20170613T063947Z.9b9d3d9cde672ca9.9f08452e8d861abb9a31b2fe6f8c650f316c398c";
+    String KEY = "&key=" + "trnsl.1.1.20170613T063947Z.9b9d3d9cde672ca9.9f08452e8d861abb9a31b2fe6f8c650f316c398c";
     String BASE = "/api/v1.5/tr.json/";
 
     @GET(BASE + "translate?" + KEY)
