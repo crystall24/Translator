@@ -1,5 +1,8 @@
 package com.example.translator;
 import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +10,7 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.translator.api.TranslateApiService;
 import com.example.translator.mapper.SupportedLanguagesResponseMapper;
@@ -50,6 +54,17 @@ public class MainActivity extends AppCompatActivity {
 
         LoadLanguages loadLanguages = new LoadLanguages();
         loadLanguages.execute("ru");
+    }
+
+    @OnClick(R.id.button_copy)
+    protected void copyToClipboard() {
+        String textToCopy = translateView.getText().toString();
+        Toast.makeText(MainActivity.this, textToCopy+ " скопированно в буфер", Toast.LENGTH_SHORT)
+                .show();
+
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Main", textToCopy);
+        clipboard.setPrimaryClip(clip);
     }
 
     @OnClick(R.id.button_translate)
